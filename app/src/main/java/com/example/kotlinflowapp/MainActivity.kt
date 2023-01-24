@@ -2,9 +2,12 @@ package com.example.kotlinflowapp
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +27,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var postList: List<Post_response>
     private var userList: ArrayList<User_data_response> = ArrayList()
+    private var searchUserList: ArrayList<User_data_response> = ArrayList()
     private lateinit var userAdapter: User_adapter
     var limit = 50
     var page = 0
@@ -37,6 +41,51 @@ class MainActivity : AppCompatActivity() {
         initView()
 
         checkNetwork()
+
+
+        binding.searchEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                //Toast.makeText(this@MainActivity, s, Toast.LENGTH_SHORT).show()
+                if (s != null) {
+                    if (s.isNotEmpty()) {
+                        //Toast.makeText(this@MainActivity, s.length.toString(), Toast.LENGTH_SHORT).show()
+                        var setList: MutableSet<User_data_response> = HashSet()
+                        for (i in 0 until userList.size) {
+                            if (userList[i].firstName?.toLowerCase()
+                                    ?.contains(s.toString().toLowerCase()) == true
+                            ) {
+                                setList.add(userList[i])
+                            }
+                        }
+                        searchUserList.clear()
+                        searchUserList.addAll(setList)
+                        setDataInToList(searchUserList)
+//
+//                    Log.d("dataxx", "set size:: ${searchUserList.size.toString()}")
+                    } else {
+//                        Toast.makeText(this@MainActivity, "Nothing to search", Toast.LENGTH_SHORT)
+//                            .show()
+                        setDataInToList(userList)
+                    }
+
+                } else {
+                    Toast.makeText(this@MainActivity, "Nothing to search", Toast.LENGTH_SHORT)
+                        .show()
+//                    setDataInToList(userList)
+                }
+            }
+
+
+        })
     }
 
     private fun checkNetwork() {
@@ -117,12 +166,21 @@ class MainActivity : AppCompatActivity() {
     private fun getData(limit: String, page: String) {
         postViewModel.getUsers(limit, page)
         postViewModel.responseUserLiveData.observe(this, Observer {
-//userList.clear()
+            //userList.clear()
             userList.addAll(it.data)
-            userAdapter = User_adapter(userList)
-            userAdapter.notifyDataSetChanged()
-            binding.itemView.adapter = userAdapter
-            Log.d("dataxx", limit + " " + page + " " + "size:: ${it.data.size.toString()}")
+
+            setDataInToList(userList)
+
         })
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun setDataInToList(userList: ArrayList<User_data_response>) {
+
+        userAdapter = User_adapter(userList)
+        userAdapter.notifyDataSetChanged()
+        binding.itemView.adapter = userAdapter
+        //Log.d("dataxx", limit + " " + page + " " + "size:: ${it.data.size.toString()}")
+
     }
 }
