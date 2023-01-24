@@ -3,11 +3,14 @@ package com.example.kotlinflowapp
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kotlinflowapp.Adapter.User_adapter
+import com.example.kotlinflowapp.Helpers.checkConnect
 import com.example.kotlinflowapp.Model.Post_response
 import com.example.kotlinflowapp.Model.User_data_response
 import com.example.kotlinflowapp.ViewModel.PostViewModel
@@ -22,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var postList: List<Post_response>
     private var userList: ArrayList<User_data_response> = ArrayList()
     private lateinit var userAdapter: User_adapter
-    var limit = 10
+    var limit = 50
     var page = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +35,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(view)
 
         initView()
+
+        checkNetwork()
+    }
+
+    private fun checkNetwork() {
+        lifecycleScope.launchWhenStarted {
+            checkConnect().collect {
+                if (it) {
+                    Toast.makeText(this@MainActivity, "connected", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@MainActivity, "not connected", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun initView() {
