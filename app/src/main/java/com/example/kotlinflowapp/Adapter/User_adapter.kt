@@ -30,8 +30,9 @@ class User_adapter(private val userList: List<User_data_response>) :
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         var response = userList[position]
-        var pos = position+1
-        holder.nameText.text = response.title + " " + response.firstName + " " + response.lastName//+" "+pos.toString()
+        var pos = position + 1
+        holder.nameText.text =
+            response.title + " " + response.firstName + " " + response.lastName//+" "+pos.toString()
         Glide.with(holder.itemView.context).load(response.picture).into(holder.profileImage)
     }
 

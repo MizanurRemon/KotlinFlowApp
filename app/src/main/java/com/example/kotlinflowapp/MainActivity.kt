@@ -3,14 +3,10 @@ package com.example.kotlinflowapp
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.kotlinflowapp.Adapter.User_adapter
 import com.example.kotlinflowapp.Model.Post_response
 import com.example.kotlinflowapp.Model.User_data_response
@@ -35,10 +31,10 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        init_view()
+        initView()
     }
 
-    private fun init_view() {
+    private fun initView() {
         binding.itemView.setHasFixedSize(true)
         binding.itemView.layoutManager = LinearLayoutManager(this)
 
@@ -51,7 +47,7 @@ class MainActivity : AppCompatActivity() {
 //            Log.d("dataxx", "size:: ${postList.size.toString()}")
 //        })
 
-        get_data(limit.toString(), page.toString())
+        getData(limit.toString(), page.toString())
 
         /*binding.itemView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
@@ -101,7 +97,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun get_data(limit: String, page: String) {
+    private fun getData(limit: String, page: String) {
         postViewModel.getUsers(limit, page)
         postViewModel.responseUserLiveData.observe(this, Observer {
 //userList.clear()
