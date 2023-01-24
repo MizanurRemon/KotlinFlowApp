@@ -61,6 +61,9 @@ class MainActivity : AppCompatActivity() {
                         var setList: MutableSet<User_data_response> = HashSet()
                         for (i in 0 until userList.size) {
                             if (userList[i].firstName?.toLowerCase()
+                                    ?.contains(
+                                        s.toString().toLowerCase()
+                                    ) == true || userList[i].lastName?.toLowerCase()
                                     ?.contains(s.toString().toLowerCase()) == true
                             ) {
                                 setList.add(userList[i])
